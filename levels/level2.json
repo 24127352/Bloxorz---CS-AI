@@ -1,0 +1,19 @@
+{
+  "level_id": 2,
+  "name": "Stage 2: The Dual Zenith",
+  "rows": 10,
+  "cols": 20,
+  "start": { "r": 2, "c": 2 },
+  "grid": [
+    "XXXXXXXXXX..XXXXXGXX",
+    "XXXXXXXXXX..XXXXXXXX",
+    "..S...F...WW...GXXXX",
+    "......F........XXXXX",
+    "XXXX..F..BXXXX.XXXXX",
+    "XXXX.ww..BXXXX..XXXX",
+    "XXXX.ww..BXXXX..XXXX",
+    "XXXX.....BXXXXFFXXXX",
+    "XXXXXX...BBBBBFFXXXX",
+    "XXXXXXXX............"
+  ]
+}
