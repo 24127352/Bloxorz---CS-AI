@@ -59,19 +59,12 @@ class GameController:
             return False
 
         # Generate next state
-        nextBlock = self.block.resultingState(dir)
-
-        print(self.block.__repr__)
-        print(nextBlock.__repr__)
+        self.block = self.block.resultingState(dir)
 
         # Check if valid
-        if not self.isValidBlockPosition(nextBlock):
+        if not self.isValidBlockPosition(self.block):
             self.isGameOver = True
             return False
-
-        # Update Block state
-        self.block = nextBlock
-        print(self.block.__repr__)
 
         # Check win condition
         if self.isWinningState():

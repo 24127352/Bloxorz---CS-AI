@@ -140,24 +140,31 @@ class BloxorzView:
                     )
                     self.tileEntities.append(tileEntity)
 
-    def animateFall(self):
-        """Animates the block tumbling down into the void."""
-        fallDuration = 0.8
-        
-        # 1. Animate block dropping vertically on Y-axis
-        targetY = self.blockMesh.y - 8
-        self.blockMesh.animate_position(
-            (self.blockMesh.x, targetY, self.blockMesh.z),
+    def animateFall(self, direction: Direction = None):
+        """
+        Drops the mesh down into the void from its current position
+        """
+        self.isAnimating = True
+        fallDuration = 1
+
+        # 1. Animate Y straight down into the void
+        targetY = self.blockMesh.y - 10
+        self.blockMesh.animate_y(
+            targetY,
             duration=fallDuration,
             curve=curve.in_cubic
         )
-        
-        # 2. Add a slight tumbling rotation while falling
-        self.blockMesh.animate_rotation(
-            (self.blockMesh.rotation_x + 90, self.blockMesh.rotation_y, self.blockMesh.rotation_z + 45),
-            duration=fallDuration,
-            curve=curve.in_cubic
-        )
+
+        # 2. Add a slight tilt in the move direction so it doesn't drop completely flat
+        if direction:
+            match direction:
+                case Direction.UP:    self.blockMesh.animate_rotation_x(self.blockMesh.rotation_x - 60, duration=fallDuration - 0.5)
+                case Direction.DOWN:  self.blockMesh.animate_rotation_x(self.blockMesh.rotation_x + 60, duration=fallDuration - 0.5)
+                case Direction.LEFT:  self.blockMesh.animate_rotation_z(self.blockMesh.rotation_z + 60, duration=fallDuration - 0.5)
+                case Direction.RIGHT: self.blockMesh.animate_rotation_z(self.blockMesh.rotation_z - 60, duration=fallDuration - 0.5)
+
+        # 3. Delay and trigger restartLevel
+        invoke(lambda: self.restartLevel(), delay=fallDuration + 0.1)
     
 
     def updateBlockMesh(self):
@@ -226,11 +233,11 @@ class BloxorzView:
             elif self.gameModel.isGameOver:
                 print("Game Over - Block fell into void!")
                 self.isAnimating = True
-                self.animateFall()
+                self.animateFall(dir)
 
                 # Note: invokes restartLevel() after completing fall animation, When updating fall duration
                 # Must update delay also
-                invoke(self.restartLevel, delay=1)
+                # invoke(self.restartLevel, delay=1)
 
     def run(self):
         """Starts the main Ursina 3D render loop."""
