@@ -183,13 +183,10 @@ class BloxorzView:
             match uti:
                 case Utility.PAUSE: self.togglePause()
                 case Utility.RESTART: self.restartLevel() # not complete yet
+            return
 
         # 2. Block game inputs if game hasn't started or is paused
         if not self.gameStarted or self.isPaused:
-            return
-
-        # Right now the key is not a directional key
-        if not isinstance(key, Direction):
             return
 
         dir = self.inputHandler.processKeyDirection(key)
@@ -210,7 +207,7 @@ class BloxorzView:
             elif self.gameModel.isGameOver:
                 print("Game Over - Block fell into void!")
                 self.animateFall()
-                self.restartLevel()
+                #self.restartLevel()
 
     def run(self):
         """Starts the main Ursina 3D render loop."""
