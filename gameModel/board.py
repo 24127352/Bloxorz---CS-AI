@@ -33,7 +33,7 @@ class Board:
     def reset(self):
         """Restores grid back to its original layout."""
         # Deep copy initial_grid into current grid state
-        self.grid = [row[:] for row in self.initial_grid]
+        self.grid = [row[:] for row in self.initialTiles]
 
     def isInBounds(self, r: int, c: int) -> bool:
         """Helper to prevent out-of-bounds or negative indexing errors."""

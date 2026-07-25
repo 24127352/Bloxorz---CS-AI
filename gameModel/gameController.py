@@ -14,7 +14,7 @@ class GameController:
         self.board.reset()
 
         # 2. Reset block state
-        self.block = Block(self.start_r, self.start_c, Orientation.STANDING)
+        self.block = Block(self.board.startR, self.board.startR, Orientation.STANDING)
 
         # 3. Reset status flags & counters
         self.isGameOver = False

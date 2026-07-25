@@ -14,6 +14,7 @@ class BloxorzView:
         self.inputHandler = InputHandler()
         self.isPaused = False
         self.gameStarted = False
+        self.isAnimating = False
 
         # Set up camera view for an isometric perspective
         # camera.position = (5, 14, -10)
@@ -57,16 +58,34 @@ class BloxorzView:
     def resumeGame(self):
         self.isPaused = False
 
+    def destroyTileEntities(self):
+        """Destroys existing tile entities to prevent stacking duplicate meshes."""
+        if hasattr(self, 'tileEntities') and self.tileEntities:
+            for entity in self.tileEntities:
+                destroy(entity)
+        self.tileEntities = []
+
     def restartLevel(self):
         """Resets the game model and refreshes 3D visual representations."""
-        # 1. Reset model state
+        print("Restarting level...")
+
+        # 1. Block inputs during reset state transition
+        self.isAnimating = True
+        
+        # 2. Reset underlying logical model (board layout, block coords, flags)
         self.gameModel.reset()
 
+        # 3. Clean up old 3D board meshes and re-render fresh tiles
+        self.destroyTileEntities()
         self.renderBoard()
 
-        # 3. Move 3D block back to start position and orientation
+        # 4. Reset block mesh rotation and snap position directly to starting tile
         self.blockMesh.rotation = (0, 0, 0)
         self.updateBlockMesh()
+
+        # 5. Unlock controls for gameplay
+        self.isAnimating = False
+        self.isPaused = False
 
     def togglePause(self):
         if not self.gameStarted:
@@ -123,7 +142,7 @@ class BloxorzView:
 
     def animateFall(self):
         """Animates the block tumbling down into the void."""
-        fallDuration = 0.6
+        fallDuration = 0.8
         
         # 1. Animate block dropping vertically on Y-axis
         targetY = self.blockMesh.y - 8
@@ -176,7 +195,7 @@ class BloxorzView:
 
     def handleUrsinaInput(self, key: str):
         """Pass key to InputHandler, then update 3D mesh if state changed."""
-        print(f"RAW KEY: '{key}'")
+        print(f"KEY: '{key}'")
 
         uti = self.inputHandler.processKeyUtility(key)
         if uti is not None:
@@ -185,8 +204,8 @@ class BloxorzView:
                 case Utility.RESTART: self.restartLevel() # not complete yet
             return
 
-        # 2. Block game inputs if game hasn't started or is paused
-        if not self.gameStarted or self.isPaused:
+        # 2. Block game inputs if game hasn't started or is paused or when playing animation
+        if not self.gameStarted or self.isPaused or self.isAnimating:
             return
 
         dir = self.inputHandler.processKeyDirection(key)
@@ -206,8 +225,12 @@ class BloxorzView:
 
             elif self.gameModel.isGameOver:
                 print("Game Over - Block fell into void!")
+                self.isAnimating = True
                 self.animateFall()
-                #self.restartLevel()
+
+                # Note: invokes restartLevel() after completing fall animation, When updating fall duration
+                # Must update delay also
+                invoke(self.restartLevel, delay=1)
 
     def run(self):
         """Starts the main Ursina 3D render loop."""
