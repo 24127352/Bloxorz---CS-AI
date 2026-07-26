@@ -1,6 +1,6 @@
 {
   "level_id": 10,
-  "name": "Stage 10: Mixed Challenge",
+  "name": "Stage 10: False Hope",
   "rows": 15,
   "cols": 15,
 
@@ -11,29 +11,30 @@
 
   "bridges": [
     {
-      "switch": [5, 3],
+      "switch": [10, 2],
       "tiles": [
         [7, 7],
         [7, 8],
-        [7, 9]
+        [7, 9],
+        [7, 10]
       ]
     }
   ],
 
   "grid": [
     "XXXXXXXXXXXXXXX",
-    "XS............X",
-    "X....FFFF.....X",
-    "X....F.......GX",
-    "X....F........X",
-    "X..w.F........X",
-    "X....F........X",
-    "X......BBB....X",
-    "X.............X",
-    "X....FFFF.....X",
-    "X.............X",
-    "X.............X",
-    "XXXXXXXXXXXXXXX",
+    "XS...........XX",
+    "X.XXXXXXX....XX",
+    "X.....F....G.XX",
+    "X.XXX.F.XXXX.XX",
+    "X.....F....X.XX",
+    "X.XXXXXXX..X.XX",
+    "X......BBBBX.XX",
+    "X.XXXXXXX..X.XX",
+    "X.....F....X.XX",
+    "X.w...F......XX",
+    "X.XXXXXXX....XX",
+    "X............XX",
     "XXXXXXXXXXXXXXX",
     "XXXXXXXXXXXXXXX"
   ]

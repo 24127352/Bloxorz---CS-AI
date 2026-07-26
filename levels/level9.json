@@ -1,6 +1,6 @@
 {
   "level_id": 9,
-  "name": "Stage 9: Mixed Challenge",
+  "name": "Stage 9: Maze of Regret",
   "rows": 15,
   "cols": 15,
 
@@ -11,7 +11,7 @@
 
   "bridges": [
     {
-      "switch": [6,3],
+      "switch": [10,3],
       "tiles": [
         [7,7],
         [7,8],
@@ -25,16 +25,16 @@
     "XXXXXXXXXXXXXXX",
     "XS...........XX",
     "X.XXXXXXX....XX",
-    "X.....F......XX",
-    "X.....F......XX",
-    "X.....F......XX",
-    "X..w.........XX",
-    "X......BBBB..XX",
-    "X...........GXX",
-    "X...FFFF.....XX",
-    "X............XX",
-    "X............XX",
-    "XXXXXXXXXXXXXXX",
+    "X.....F.......X",
+    "X.XXX.F.XXXX..X",
+    "X.....F....X..X",
+    "X.XXXXXXX..X..X",
+    "X......BBBBX..X",
+    "X.XXXXXXX..X..X",
+    "X.....F....X..X",
+    "X..w..F.......X",
+    "X.XXXXXXX.XX..X",
+    "X...........G.X",
     "XXXXXXXXXXXXXXX",
     "XXXXXXXXXXXXXXX"
   ]

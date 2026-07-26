@@ -1,18 +1,18 @@
 {
-  "level_id": 7,
-  "name": "Stage 7: First Bridge",
-  "rows": 10,
-  "cols": 12,
+  "level_id":7,
+  "name":"Stage 7: First Bridge",
+  "rows":10,
+  "cols":12,
 
-  "start": {
-    "r": 1,
-    "c": 1
+  "start":{
+    "r":1,
+    "c":1
   },
 
-  "bridges": [
+  "bridges":[
     {
-      "switch": [7,2],
-      "tiles": [
+      "switch":[7,2],
+      "tiles":[
         [4,5],
         [4,6],
         [4,7]
@@ -20,12 +20,12 @@
     }
   ],
 
-  "grid": [
+  "grid":[
     "XXXXXXXXXXXX",
     "XS........XX",
     "X.XXXXXX..XX",
     "X......X..XX",
-    "X....BBB.GXX",
+    "XXX..BBB.GXX",
     "X......X..XX",
     "X.XXXXXX..XX",
     "X.w.......XX",

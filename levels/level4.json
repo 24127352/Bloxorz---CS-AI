@@ -1,6 +1,6 @@
 {
   "level_id": 4,
-  "name": "Broken Crossing",
+  "name": "Twisted Corridor",
   "rows": 10,
   "cols": 10,
 
@@ -12,12 +12,12 @@
   "grid": [
     "XXXXXXXXXX",
     "XS.......X",
-    "X.XXXX...X",
-    "X....F...X",
-    "X.XXXX...X",
-    "X....F...X",
-    "X.XXXX...X",
-    "X.......GX",
+    "XXX.XXX..X",
+    "X...F.X..X",
+    "X.XXX.X..X",
+    "X.F...X..X",
+    "X.XXX.XX.X",
+    "X...F...GX",
     "XXXXXXXXXX",
     "XXXXXXXXXX"
   ]

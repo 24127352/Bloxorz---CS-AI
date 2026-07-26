@@ -1,6 +1,6 @@
 {
   "level_id": 12,
-  "name": "Final Trial",
+  "name": "Stage 12: Final Trial",
   "rows": 20,
   "cols": 20,
 
@@ -13,42 +13,43 @@
     {
       "switch": [5, 5],
       "tiles": [
+        [10, 8],
+        [10, 9],
         [10, 10],
-        [10, 11],
-        [10, 12],
-        [10, 13]
+        [10, 11]
       ]
     },
     {
-      "switch": [15, 15],
+      "switch": [14, 15],
       "tiles": [
-        [16, 10],
-        [16, 11],
-        [16, 12]
+        [15, 8],
+        [15, 9],
+        [15, 10],
+        [15, 11]
       ]
     }
   ],
 
   "grid": [
     "XXXXXXXXXXXXXXXXXXXX",
-    "X..................X",
-    "X....FFFF..........X",
-    "X..................X",
-    "X..................X",
-    "X....w.............X",
-    "X........FFFF......X",
-    "X..................X",
-    "X..................X",
-    "X.........FFFF.....X",
-    "X.........BBBB.....X",
-    "X..................X",
-    "X......FFFF........X",
-    "X..................X",
-    "X..............W...X",
-    "X..................X",
-    "X.........BBB....G.X",
-    "X..................X",
-    "X..................X",
+    "XS...............XXX",
+    "X.XXXXXXXXXXXX...XXX",
+    "X.....F..........XXX",
+    "X.XXX.F.XXXXXXX..XXX",
+    "X....wF.........XXXX",
+    "X.XXX.F.XXXXXX..XXXX",
+    "X.....F.........XXXX",
+    "X.XXXXXXXXXXXX..XXXX",
+    "X........F......XXXX",
+    "X.......BBBB....XXXX",
+    "X.XXXXXXFXXXX...XXXX",
+    "X......FF.......XXXX",
+    "X.XXXXXXXXXXXX..XXXX",
+    "X..............WXXXX",
+    "X.......BBBB....XXXX",
+    "X.XXXXXXXXXXXX..GXXX",
+    "X................XXX",
+    "XXXXXXXXXXXXXXXXXXXX",
     "XXXXXXXXXXXXXXXXXXXX"
   ]
 }
