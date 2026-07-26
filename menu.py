@@ -53,10 +53,11 @@ class StartMenu(Entity):
 
 
 class PauseMenu(Entity):
-    def __init__(self, on_resume_callback, on_restart_callback):
+    def __init__(self, on_resume_callback, on_restart_callback, on_next_level_callback):
         super().__init__(parent=camera.ui, enabled=False) # Start hidden
         self.on_resume_callback = on_resume_callback
         self.on_restart_callback = on_restart_callback
+        self.on_next_level_callback = on_next_level_callback
 
         # Dark overlay behind pause popup
         self.bg = Entity(
@@ -97,13 +98,22 @@ class PauseMenu(Entity):
             on_click=self.restart
         )
 
+        self.next_level_button = Button(
+            parent=self,
+            text="Next Level",
+            color=color.azure,
+            scale=(0.3, 0.08),
+            y = -0.17,
+            on_click=self.nextLevel
+        )
+
         # Quit Button
         self.quit_button = Button(
             parent=self,
             text="Quit Game",
             color=color.olive,
             scale=(0.3, 0.08),
-            y=-0.17,
+            y=-0.28,
             on_click=application.quit
         )
 
@@ -116,6 +126,11 @@ class PauseMenu(Entity):
         self.disable()
         if self.on_restart_callback:
             self.on_restart_callback()
+
+    def nextLevel(self):
+        self.disable()
+        if self.on_next_level_callback:
+            self.on_next_level_callback()
 
     def toggle(self):
         self.enabled = not self.enabled

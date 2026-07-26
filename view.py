@@ -18,10 +18,6 @@ class BloxorzView:
         self.isAnimating = False
         self.levelManager = LevelManager()
 
-        # Set up camera view for an isometric perspective
-        # camera.position = (5, 14, -10)
-        # camera.rotation_x = 45
-
         # Visuals & Setup
         window.color = color.black50
         self.setupLighting()
@@ -31,18 +27,19 @@ class BloxorzView:
         self.startMenu = StartMenu(on_start_callback=self.startGame)
         self.pauseMenu = PauseMenu(
             on_resume_callback=self.resumeGame,
-            on_restart_callback=self.restartLevel
+            on_restart_callback=self.restartLevel,
+            on_next_level_callback=self.loadNextLevel
         )
 
     def startGame(self):
         self.gameStarted = True
         self.tileColors = {
-            Tile.NORMAL: color.light_gray,
-            Tile.GOAL: color.magenta,
-            Tile.FRAGILE: color.orange,
-            Tile.SOFT_SWITCH: color.cyan,
+            Tile.NORMAL:       color.light_gray,
+            Tile.GOAL:         color.magenta,
+            Tile.FRAGILE:      color.orange,
+            Tile.SOFT_SWITCH:  color.cyan,
             Tile.HEAVY_SWITCH: color.red,
-            Tile.BRIDGE: color.brown
+            Tile.BRIDGE:       color.brown
         }
 
         self.tileEntities = []
@@ -51,7 +48,7 @@ class BloxorzView:
         # 3D Block mesh creation
         self.blockMesh = Entity(
             model='cube',
-            color=color.orange,      # High-contrast color
+            color=color.azure,
             texture='white_cube',   # Sharpens edges
             origin_y=-0.5  # Pivot at the bottom face of the block
         )
@@ -59,6 +56,13 @@ class BloxorzView:
 
     def resumeGame(self):
         self.isPaused = False
+
+    def unlockControlAll(self):
+        """
+        Set all attributes that could lock control for block movement to false
+        """
+        self.isPaused = False
+        self.isAnimating = False
 
     def destroyTileEntities(self):
         """Destroys existing tile entities to prevent stacking duplicate meshes."""
@@ -254,6 +258,7 @@ class BloxorzView:
         # Pass the function directly into Ursina's app instance
         self.app.input = self.handleUrsinaInput
         self.app.run()
+
     def loadNextLevel(self):
 
         # Load next level
@@ -288,4 +293,4 @@ class BloxorzView:
         self.updateBlockMesh()
 
         # Unlock controls
-        self.isAnimating = False   
+        self.unlockControlAll()
