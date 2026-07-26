@@ -1,0 +1,15 @@
+{
+  "level_id": 1,
+  "name": "Stage 1",
+  "rows": 6,
+  "cols": 10,
+  "start": { "r": 1, "c": 1 },
+  "grid": [
+    "....XXXXXX",
+    ".S..GXXXXX",
+    "....XXXXXX",
+    "...WWXXXXX",
+    "...FFXXXXX",
+    "...wwXXXXX"
+  ]
+}
