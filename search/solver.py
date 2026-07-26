@@ -4,12 +4,13 @@ from collections import deque
 from gameModel.board import Tile
 from search.node import Node
 
-
-
-
+import time
+import tracemalloc
 
 def depth_first_graph_search(problem):
-
+    tracemalloc.start()
+    start_time = time.perf_counter()
+    expanded_nodes = 0
     stack = [Node(problem.initial)]
 
     visited = set()
@@ -17,12 +18,23 @@ def depth_first_graph_search(problem):
     while stack:
 
         node = stack.pop()
-
         if problem.goal_test(node.state):
-            return node
+            search_time = time.perf_counter() - start_time
+            current, peak = tracemalloc.get_traced_memory()
+            tracemalloc.stop()
+            peak_memory = peak / (1024 * 1024)
+            return {
+                "solution": node,
+                "search_time": search_time,
+                "expanded_nodes": expanded_nodes,
+                "peak_memory": peak_memory,
+                "moves": len(node.solution())
+            }
 
         if node.state in visited:
             continue
+
+        expanded_nodes += 1
 
         visited.add(node.state)
 
@@ -47,14 +59,14 @@ def depth_first_graph_search(problem):
             )
 
             stack.append(child)
-
     return None
 
 
 def uniform_cost_search(problem):
-
+    start_time = time.perf_counter()
     frontier = PriorityQueue()
-
+    expanded_nodes = 0
+    tracemalloc.start()
     frontier.put(
         (
             0,
@@ -67,17 +79,28 @@ def uniform_cost_search(problem):
     while not frontier.empty():
 
         cost, node = frontier.get()
-
         if (
             node.state in explored
             and explored[node.state] <= cost
         ):
             continue
 
+        expanded_nodes += 1
+
         explored[node.state] = cost
 
         if problem.goal_test(node.state):
-            return node
+            search_time = time.perf_counter() - start_time
+            current, peak = tracemalloc.get_traced_memory()
+            tracemalloc.stop()
+            peak_memory = peak / (1024 * 1024)
+            return {
+                "solution": node,
+                "search_time": search_time,
+                "expanded_nodes": expanded_nodes,
+                "peak_memory": peak_memory,
+                "moves": len(node.solution())
+            }
 
         for action in problem.actions(node.state):
 
@@ -116,9 +139,7 @@ def uniform_cost_search(problem):
                     child
                 )
             )
-
     return None
-
 def manhattan_heuristic(problem, state):
     """Return an admissible heuristic based on Manhattan distance to the goal."""
     goal_positions = []
@@ -137,18 +158,31 @@ def manhattan_heuristic(problem, state):
 
 
 def breadth_first_search(problem):
+    start_time = time.perf_counter()
     frontier = deque([Node(problem.initial)])
     explored = set()
-
+    expanded_nodes = 0
+    tracemalloc.start()
     while frontier:
         node = frontier.popleft()
-
         if problem.goal_test(node.state):
-            return node
+            search_time = time.perf_counter() - start_time
+            current, peak = tracemalloc.get_traced_memory()
+            tracemalloc.stop()
+            peak_memory = peak / (1024 * 1024)
+            return {
+                "solution": node,
+                "search_time": search_time,
+                "expanded_nodes": expanded_nodes,
+                "peak_memory": peak_memory,
+                "moves": len(node.solution())
+            }
 
         if node.state in explored:
             continue
 
+        expanded_nodes += 1
+        
         explored.add(node.state)
 
         for action in problem.actions(node.state):
@@ -164,25 +198,37 @@ def breadth_first_search(problem):
                 path_cost=node.path_cost + 1,
             )
             frontier.append(child)
-
     return None
 
 
 def a_star_search(problem):
+    start_time = time.perf_counter()
     frontier = PriorityQueue()
     frontier.put((0, Node(problem.initial)))
     explored = {}
-
+    expanded_nodes = 0
+    tracemalloc.start()
     while not frontier.empty():
         priority, node = frontier.get()
-
         if node.state in explored and explored[node.state] <= priority:
             continue
+
+        expanded_nodes += 1
 
         explored[node.state] = priority
 
         if problem.goal_test(node.state):
-            return node
+            search_time = time.perf_counter() - start_time
+            current, peak = tracemalloc.get_traced_memory()
+            tracemalloc.stop()
+            peak_memory = peak / (1024 * 1024)
+            return {
+                "solution": node,
+                "search_time": search_time,
+                "expanded_nodes": expanded_nodes,
+                "peak_memory": peak_memory,
+                "moves": len(node.solution())
+            }
 
         for action in problem.actions(node.state):
             child_state = problem.result(node.state, action)
@@ -204,5 +250,4 @@ def a_star_search(problem):
                 path_cost=total_cost,
             )
             frontier.put((total_cost + heuristic, child))
-
     return None

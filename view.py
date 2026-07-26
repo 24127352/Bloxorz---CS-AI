@@ -336,20 +336,67 @@ class BloxorzView:
         )
 
         if algorithm == "dfs":
-
             result = depth_first_graph_search(self.problem)
 
-        elif algorithm == "bfs":
+            if result is None:
+                print("No solution")
+                return
+            node = result["solution"]
 
+            print("----------------------")
+            print("Algorithm :", algorithm.upper())
+            print("Search time :", result["search_time"], "seconds")
+            print("Expanded nodes :", result["expanded_nodes"])
+            print("Peak memory :", round(result["peak_memory"], 2), "MB")
+            print("Number of moves :", result["moves"])
+            print("----------------------")
+
+        elif algorithm == "bfs":
             result = breadth_first_search(self.problem)
 
-        elif algorithm == "ucs":
+            if result is None:
+                print("No solution")
+                return
+            node = result["solution"]
 
+            print("----------------------")
+            print("Algorithm :", algorithm.upper())
+            print("Search time :", result["search_time"], "seconds")
+            print("Expanded nodes :", result["expanded_nodes"])
+            print("Peak memory :", round(result["peak_memory"], 2), "MB")
+            print("Number of moves :", result["moves"])
+            print("----------------------")
+
+        elif algorithm == "ucs":
             result = uniform_cost_search(self.problem)
 
-        elif algorithm == "astar":
+            if result is None:
+                print("No solution")
+                return
+            node = result["solution"]
 
+            print("----------------------")
+            print("Algorithm :", algorithm.upper())
+            print("Search time :", result["search_time"], "seconds")
+            print("Expanded nodes :", result["expanded_nodes"])
+            print("Peak memory :", round(result["peak_memory"], 2), "MB")
+            print("Number of moves :", result["moves"])
+            print("----------------------")
+
+        elif algorithm == "astar":
             result = a_star_search(self.problem)
+
+            if result is None:
+                print("No solution")
+                return
+            node = result["solution"]
+            print("----------------------")
+            print("Algorithm :", algorithm.upper())
+            print("Search time :", result["search_time"], "seconds")
+            print("Expanded nodes :", result["expanded_nodes"])
+            print("Peak memory :", round(result["peak_memory"], 2), "MB")
+            print("Number of moves :", result["moves"])
+            print("----------------------")
 
         else:
             self.isSolving = False
@@ -360,7 +407,7 @@ class BloxorzView:
             self.isSolving = False
             return
 
-        self.autoSolution = result.solution()
+        self.autoSolution = result["solution"].solution()
 
         self.autoIndex = 0
 
