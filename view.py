@@ -1,7 +1,7 @@
 from ursina import *
 
 from gameModel.gameController import GameController
-from gameModel.block import  Orientation, Direction
+from gameModel.block import  Direction
 from gameModel.board import Tile
 from inputHandler import InputHandler, Utility
 from menu import StartMenu, PauseMenu
@@ -40,7 +40,8 @@ class BloxorzView:
             Tile.FRAGILE: color.orange,
             Tile.SOFT_SWITCH: color.cyan,
             Tile.HEAVY_SWITCH: color.red,
-            Tile.BRIDGE: color.brown
+            Tile.BRIDGE_ACTIVE: color.brown,
+            Tile.BRIDGE_CLOSE: color.dark_gray
         }
 
         self.tileEntities = []
@@ -147,7 +148,7 @@ class BloxorzView:
         self.isAnimating = True
         fallDuration = 1
 
-        # 1. Animate Y straight down into the void
+        # 1. Animate Y dropping down into the void
         targetY = self.blockMesh.y - 10
         self.blockMesh.animate_y(
             targetY,
@@ -158,10 +159,10 @@ class BloxorzView:
         # 2. Add a slight tilt in the move direction so it doesn't drop completely flat
         if direction:
             match direction:
-                case Direction.UP:    self.blockMesh.animate_rotation_x(self.blockMesh.rotation_x - 60, duration=fallDuration - 0.5)
-                case Direction.DOWN:  self.blockMesh.animate_rotation_x(self.blockMesh.rotation_x + 60, duration=fallDuration - 0.5)
-                case Direction.LEFT:  self.blockMesh.animate_rotation_z(self.blockMesh.rotation_z + 60, duration=fallDuration - 0.5)
-                case Direction.RIGHT: self.blockMesh.animate_rotation_z(self.blockMesh.rotation_z - 60, duration=fallDuration - 0.5)
+                case Direction.UP:    self.blockMesh.animate_rotation_x(self.blockMesh.rotation_x - 100, duration=fallDuration - 0.3)
+                case Direction.DOWN:  self.blockMesh.animate_rotation_x(self.blockMesh.rotation_x + 100, duration=fallDuration - 0.3)
+                case Direction.LEFT:  self.blockMesh.animate_rotation_z(self.blockMesh.rotation_z + 100, duration=fallDuration - 0.3)
+                case Direction.RIGHT: self.blockMesh.animate_rotation_z(self.blockMesh.rotation_z - 100, duration=fallDuration - 0.3)
 
         # 3. Delay and trigger restartLevel
         invoke(lambda: self.restartLevel(), delay=fallDuration + 0.1)
@@ -178,12 +179,12 @@ class BloxorzView:
         targetScale = (0, 0, 0)
         targetPos = (0, 0, 0)
 
-        if currentBlock.orientation == Orientation.STANDING:
+        if currentBlock.isStanding():
             # Standing vertically: 1x2x1 scale, centered directly over tile (c, r)
             targetScale = (0.9, 1.8, 0.9)
             targetPos = (c, 0, -r)
 
-        elif currentBlock.orientation == Orientation.LYING:
+        elif currentBlock.isLying():
             if dc == 1:
                 # Lying horizontally across columns c and c+1
                 # Center point is c + 0.5 along X axis
@@ -234,10 +235,6 @@ class BloxorzView:
                 print("Game Over - Block fell into void!")
                 self.isAnimating = True
                 self.animateFall(dir)
-
-                # Note: invokes restartLevel() after completing fall animation, When updating fall duration
-                # Must update delay also
-                # invoke(self.restartLevel, delay=1)
 
     def run(self):
         """Starts the main Ursina 3D render loop."""

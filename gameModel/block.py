@@ -88,7 +88,12 @@ class Block:
         self.dc = nextBlock.dc
         self.orientation = nextBlock.orientation
 
-    # The followings are not intended to be used for the solver
+    def isStanding(self) -> bool: 
+        return self.orientation == Orientation.STANDING
+
+    def isLying(self) -> bool:
+        return self.orientation == Orientation.LYING
+
     def moveUp(self):
         self.applyMove(Direction.UP)
 

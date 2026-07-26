@@ -11,7 +11,8 @@ CHAR_TILE_MAP = {
     'S': Tile.NORMAL,  # Start tile sits on a normal floor tile
     'w': Tile.SOFT_SWITCH,
     'W': Tile.HEAVY_SWITCH,
-    'B': Tile.BRIDGE
+    'B': Tile.BRIDGE_ACTIVE,
+    'b': Tile.BRIDGE_CLOSE
 }
 
 def loadLevelFromJson(filePath: str) -> Tuple[Board, Block]:
