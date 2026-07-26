@@ -4,7 +4,7 @@ from gameModel.gameController import GameController
 from gameModel.block import  Orientation, Direction
 from gameModel.board import Tile
 from inputHandler import InputHandler, Utility
-from menu import StartMenu, PauseMenu
+from menu import *
 from levels.levelManager import LevelManager
 
 from search.solver import (
@@ -24,10 +24,14 @@ class BloxorzView:
         self.problem = problem
         self.solution = []
         self.autoindex = 0
-        # Set up camera view for an isometric perspective
-        # camera.position = (5, 14, -10)
-        # camera.rotation_x = 45
         self.levelManager = LevelManager()
+        self.algorithmList = ["BFS", "DFS", "UCS", "A*"]
+        algorithmCallbacks = {
+            "BFS": self.solveBFS,
+            "DFS": self.solveDFS,
+            "UCS": self.solveUCS,
+            "A*": self.solveAStar
+        }
 
         # Visuals & Setup
         window.color = color.black50
@@ -35,12 +39,14 @@ class BloxorzView:
         self.setupCamera()
 
         # Instantiate Menus
-        self.startMenu = StartMenu(on_start_callback=self.startGame, on_dfs_callback=self.solveDFS, on_ucs_callback=self.solveUCS)
+        self.startMenu = StartMenu(on_start_callback=self.startGame)
         self.pauseMenu = PauseMenu(
             on_resume_callback=self.resumeGame,
             on_restart_callback=self.restartLevel,
-            on_next_level_callback=self.loadNextLevel
+            on_next_level_callback=self.loadNextLevel,
+            on_solver_callback= self.showSolverMenu
         )
+        self.solverMenu = SolverMenu(self.algorithmList, self.handleAlgorithmSelected)
 
     def startGame(self):
         self.gameStarted = True
@@ -64,12 +70,46 @@ class BloxorzView:
             origin_y=-0.5  # Pivot at the bottom face of the block
         )
         self.updateBlockMesh()
-    def solveDFS(self):
-        self.solve("dfs")
 
+    def showSolverMenu(self):
+        if not self.gameStarted or not self.isPaused:
+            return
+
+        self.solverMenu.show()
+
+    def handleAlgorithmSelected(self, algo_name: str):
+        self.isPaused = True
+        """Centralized handler for running solvers."""
+        print(f"Algorithm selected: {algo_name}")
+
+        match algo_name:
+            case "BFS":
+                self.solveBFS()
+            case "DFS":
+                self.solveDFS()
+            case "UCS":
+                self.solveUCS()
+            case "A* Search":
+                self.solveAStar()
+                
+        # Apply solutions before unpausing
+
+        self.isPaused = False
+        
+    
+    def solveDFS(self):
+        print("Solving using DFS.........")
+        #self.solve("dfs")
 
     def solveUCS(self):
-        self.solve("ucs")
+        print("Solving using UCS.........")
+        #self.solve("ucs")
+    
+    def solveBFS(self):
+        print("Solving using BFS........")
+
+    def solveAStar(self):
+        print("Solving using A*..........")
         
     def resumeGame(self):
         self.isPaused = False
@@ -107,8 +147,7 @@ class BloxorzView:
         self.updateBlockMesh()
 
         # 5. Unlock controls for gameplay
-        self.isAnimating = False
-        self.isPaused = False
+        self.unlockControlAll()
 
     def togglePause(self):
         if not self.gameStarted:
