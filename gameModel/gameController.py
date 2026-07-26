@@ -62,11 +62,11 @@ class GameController:
 
             tile = self.board.getTile(r, c)
 
-            # Blue switch
+            # Soft switch
             if tile == Tile.SOFT_SWITCH:
                 self.board.toggleBridge((r, c))
 
-            # Red switch
+            # Heavy switch
             if (
                 tile == Tile.HEAVY_SWITCH
                 and self.block.orientation == Orientation.STANDING
@@ -82,12 +82,12 @@ class GameController:
             ) == Tile.GOAL
         )
 
-    def executeMove(self, direction):
+    def executeMove(self, direction: Direction):
 
         if self.isGameOver or self.hasWon:
             return False
 
-        self.block = self.block.resultingState(direction)
+        self.block.applyMove(direction)
 
         if not self.isValidBlockPosition(self.block):
             self.isGameOver = True
