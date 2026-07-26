@@ -57,8 +57,7 @@ class Problem:
         if tile == Tile.SOFT_SWITCH:
 
             nextState.board.toggleBridge(
-                nextBlock.r,
-                nextBlock.c
+                (nextBlock.r, nextBlock.c)
             )
 
         elif (
@@ -67,8 +66,7 @@ class Problem:
         ):
 
             nextState.board.toggleBridge(
-                nextBlock.r,
-                nextBlock.c
+                (nextBlock.r, nextBlock.c)
             )
 
         return nextState

@@ -1,7 +1,7 @@
 from levels.levelManager import LevelManager
 from gameModel.gameController import GameController
 from gameModel.state import State
-from search.problem import Problem
+from gameModel.problem import Problem
 from view import BloxorzView
 
 

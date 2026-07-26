@@ -109,12 +109,12 @@ class PauseMenu(Entity):
         )
 
         # Solver button
-        self.resume_button = Button(
+        self.solver_button = Button(
             parent=self,
             text="Solver",
             color=color.azure,
-            scale=(0.3, 0.08),
-            y= -0.28,
+            scale=(0.3,0.08),
+            y=-0.28,
             on_click=self.solver
         )
 

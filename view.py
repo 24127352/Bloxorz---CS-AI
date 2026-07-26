@@ -8,9 +8,13 @@ from menu import *
 from levels.levelManager import LevelManager
 
 from search.solver import (
+    breadth_first_search,
     depth_first_graph_search,
-    uniform_cost_search
+    uniform_cost_search,
+    a_star_search
 )
+from gameModel.problem import Problem
+from gameModel.state import State
 
 class BloxorzView:
     def __init__(self, gameModel: GameController, problem):
@@ -83,13 +87,17 @@ class BloxorzView:
         print(f"Algorithm selected: {algo_name}")
 
         match algo_name:
+
             case "BFS":
                 self.solveBFS()
+
             case "DFS":
                 self.solveDFS()
+
             case "UCS":
                 self.solveUCS()
-            case "A* Search":
+
+            case "A*":
                 self.solveAStar()
                 
         # Apply solutions before unpausing
@@ -99,17 +107,19 @@ class BloxorzView:
     
     def solveDFS(self):
         print("Solving using DFS.........")
-        #self.solve("dfs")
+        self.solve("dfs")
 
     def solveUCS(self):
         print("Solving using UCS.........")
-        #self.solve("ucs")
+        self.solve("ucs")
     
     def solveBFS(self):
         print("Solving using BFS........")
+        self.solve("bfs")
 
     def solveAStar(self):
         print("Solving using A*..........")
+        self.solve("astar")
         
     def resumeGame(self):
         self.isPaused = False
@@ -148,6 +158,12 @@ class BloxorzView:
 
         # 5. Unlock controls for gameplay
         self.unlockControlAll()
+        self.problem = Problem(
+            State(
+                self.gameModel.board,
+                self.gameModel.block
+            )
+        )
 
     def togglePause(self):
         if not self.gameStarted:
@@ -317,19 +333,40 @@ class BloxorzView:
 
     def solve(self, algorithm):
 
-        self.startGame()
+        self.restartLevel()
+
+        self.problem = Problem(
+            State(
+                self.gameModel.board,
+                self.gameModel.block
+            )
+        )
 
         if algorithm == "dfs":
+
             result = depth_first_graph_search(self.problem)
 
-        else:
+        elif algorithm == "bfs":
+
+            result = breadth_first_search(self.problem)
+
+        elif algorithm == "ucs":
+
             result = uniform_cost_search(self.problem)
+
+        elif algorithm == "astar":
+
+            result = a_star_search(self.problem)
+
+        else:
+            return
 
         if result is None:
             print("No solution")
             return
 
         self.autoSolution = result.solution()
+
         self.autoIndex = 0
 
         invoke(self.playSolution, delay=0.5)
@@ -343,6 +380,10 @@ class BloxorzView:
         action = self.autoSolution[self.autoIndex]
 
         self.gameModel.executeMove(action)
+
+        self.destroyTileEntities()
+
+        self.renderBoard()
 
         self.updateBlockMesh()
 
@@ -385,3 +426,9 @@ class BloxorzView:
 
         # Unlock controls
         self.unlockControlAll()
+        self.problem = Problem(
+            State(
+                self.gameModel.board,
+                self.gameModel.block
+            )
+        )
