@@ -201,52 +201,47 @@ class BloxorzView:
         self.blockMesh.position = targetPos
 
     def handleUrsinaInput(self, key: str):
-        """Pass key to InputHandler, then update 3D mesh if state changed."""
-        print(f"KEY: '{key}'")
+    """Pass key to InputHandler, then update 3D mesh if state changed."""
+    print(f"KEY: '{key}'")
 
-        uti = self.inputHandler.processKeyUtility(key)
-        if uti is not None:
-            match uti:
-                case Utility.PAUSE: self.togglePause()
-                case Utility.RESTART: self.restartLevel() # not complete yet
-            return
+    uti = self.inputHandler.processKeyUtility(key)
+    if uti is not None:
+        match uti:
+            case Utility.PAUSE:
+                self.togglePause()
+            case Utility.RESTART:
+                self.restartLevel()
+        return
 
-        # 2. Block game inputs if game hasn't started or is paused or when playing animation
-        if not self.gameStarted or self.isPaused or self.isAnimating:
-            return
+    # Block game inputs if game hasn't started, is paused, or animation is playing
+    if not self.gameStarted or self.isPaused or self.isAnimating:
+        return
 
-        dir = self.inputHandler.processKeyDirection(key)
+    dir = self.inputHandler.processKeyDirection(key)
 
-        if dir is None:
-            return
+    if dir is None:
+        return
 
-        self.gameModel.executeMove(dir)
-<<<<<<< HEAD
+    self.gameModel.executeMove(dir)
 
-        # Refresh board graphics
-        self.destroyTileEntities()
-        self.renderBoard()
+    # Refresh board graphics
+    # Important for bridge/switch changes
+    self.destroyTileEntities()
+    self.renderBoard()
 
-        # Update block position
-=======
->>>>>>> d766cf41537dc9cf449b55cf049a2b3df4c6dade
-        self.updateBlockMesh()
+    # Update block position
+    self.updateBlockMesh()
 
-        if  self.gameModel.isGameOver or self.gameModel.hasWon:
-            print ("Updating mesh")
-            
-            if self.gameModel.hasWon:
-                print("Stage Complete!")
+    if self.gameModel.isGameOver or self.gameModel.hasWon:
+        print("Updating mesh")
 
+        if self.gameModel.hasWon:
+            print("Stage Complete!")
 
-            elif self.gameModel.isGameOver:
-                print("Game Over - Block fell into void!")
-                self.isAnimating = True
-                self.animateFall(dir)
-
-                # Note: invokes restartLevel() after completing fall animation, When updating fall duration
-                # Must update delay also
-                # invoke(self.restartLevel, delay=1)
+        elif self.gameModel.isGameOver:
+            print("Game Over - Block fell into void!")
+            self.isAnimating = True
+            self.animateFall(dir)
 
     def run(self):
         """Starts the main Ursina 3D render loop."""

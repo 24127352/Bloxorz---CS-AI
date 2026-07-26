@@ -3,7 +3,6 @@
   "name": "Stage 2: The Dual Zenith",
   "rows": 10,
   "cols": 20,
-<<<<<<< HEAD
 
   "start": {
     "r": 2,
@@ -69,9 +68,6 @@
     }
   ],
 
-=======
-  "start": { "r": 2, "c": 2 },
->>>>>>> d766cf41537dc9cf449b55cf049a2b3df4c6dade
   "grid": [
     "XXXXXXXXXX..XXXXXGXX",
     "XXXXXXXXXX..XXXXXXXX",
