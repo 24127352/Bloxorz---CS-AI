@@ -88,7 +88,6 @@ class Block:
         self.dc = nextBlock.dc
         self.orientation = nextBlock.orientation
 
-    # The followings are not intended to be used for the solver
     def moveUp(self):
         self.applyMove(Direction.UP)
 

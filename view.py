@@ -24,18 +24,13 @@ class BloxorzView:
         self.isPaused = False
         self.gameStarted = False
         self.isAnimating = False
+        self.isSolving = False
 
         self.problem = problem
         self.solution = []
         self.autoindex = 0
         self.levelManager = LevelManager()
         self.algorithmList = ["BFS", "DFS", "UCS", "A*"]
-        algorithmCallbacks = {
-            "BFS": self.solveBFS,
-            "DFS": self.solveDFS,
-            "UCS": self.solveUCS,
-            "A*": self.solveAStar
-        }
 
         # Visuals & Setup
         window.color = color.black50
@@ -80,9 +75,10 @@ class BloxorzView:
             return
 
         self.solverMenu.show()
+        self.isPaused = False
 
     def handleAlgorithmSelected(self, algo_name: str):
-        self.isPaused = True
+        self.isSolving = True
         """Centralized handler for running solvers."""
         print(f"Algorithm selected: {algo_name}")
 
@@ -99,10 +95,6 @@ class BloxorzView:
 
             case "A*":
                 self.solveAStar()
-                
-        # Apply solutions before unpausing
-
-        self.isPaused = False
         
     
     def solveDFS(self):
@@ -130,6 +122,7 @@ class BloxorzView:
         """
         self.isPaused = False
         self.isAnimating = False
+        self.isSolving = False
 
     def destroyTileEntities(self):
         """Destroys existing tile entities to prevent stacking duplicate meshes."""
@@ -292,7 +285,7 @@ class BloxorzView:
             return
 
         # Block game inputs if game hasn't started, is paused, or animation is playing
-        if not self.gameStarted or self.isPaused or self.isAnimating:
+        if not self.gameStarted or self.isPaused or self.isAnimating or self.isSolving:
             return
 
         dir = self.inputHandler.processKeyDirection(key)
@@ -333,7 +326,7 @@ class BloxorzView:
 
     def solve(self, algorithm):
 
-        self.restartLevel()
+        # self.restartLevel()
 
         self.problem = Problem(
             State(
@@ -359,10 +352,12 @@ class BloxorzView:
             result = a_star_search(self.problem)
 
         else:
+            self.isSolving = False
             return
 
         if result is None:
             print("No solution")
+            self.isSolving = False
             return
 
         self.autoSolution = result.solution()
@@ -374,7 +369,10 @@ class BloxorzView:
     def playSolution(self):
 
         if self.autoIndex >= len(self.autoSolution):
+            self.isSolving = False
             print("Finished")
+            if (self.gameModel.hasWon): 
+                self.loadNextLevel()
             return
 
         action = self.autoSolution[self.autoIndex]
