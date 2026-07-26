@@ -1,4 +1,4 @@
-from levels.levelLoader import loadLevelFromJson
+from levels.levelManager import LevelManager
 from gameModel.gameController import GameController
 from gameModel.state import State
 from search.problem import Problem
@@ -6,16 +6,16 @@ from view import BloxorzView
 
 
 def main():
+    levelManager = LevelManager()
+    board, block = levelManager.loadLevel()
 
-    board, block = loadLevelFromJson("levels/level2.json")
+    problem = Problem(State(board, block))
 
-    controller = GameController(board, block)
+    myGame = GameController(board, block)
+    app = BloxorzView(myGame, problem)
 
-    problem = Problem(
-        State(board, block)
-    )
-
-    app = BloxorzView(controller, problem)
+    # Make both use the same LevelManager
+    app.levelManager = levelManager
 
     app.run()
 

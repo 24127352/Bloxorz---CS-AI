@@ -1,0 +1,24 @@
+{
+  "level_id": 4,
+  "name": "Broken Crossing",
+  "rows": 10,
+  "cols": 10,
+
+  "start": {
+    "r": 1,
+    "c": 1
+  },
+
+  "grid": [
+    "XXXXXXXXXX",
+    "XS.......X",
+    "X.XXXX...X",
+    "X....F...X",
+    "X.XXXX...X",
+    "X....F...X",
+    "X.XXXX...X",
+    "X.......GX",
+    "XXXXXXXXXX",
+    "XXXXXXXXXX"
+  ]
+}

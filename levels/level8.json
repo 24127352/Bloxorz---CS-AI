@@ -1,0 +1,45 @@
+{
+  "level_id": 8,
+  "name": "Stage 8: Dual Switch",
+  "rows": 12,
+  "cols": 12,
+
+  "start": {
+    "r": 1,
+    "c": 1
+  },
+
+  "bridges": [
+    {
+      "switch": [4,2],
+      "tiles": [
+        [5,5],
+        [5,6],
+        [5,7]
+      ]
+    },
+    {
+      "switch": [8,8],
+      "tiles": [
+        [6,9],
+        [7,9],
+        [8,9]
+      ]
+    }
+  ],
+
+  "grid": [
+    "XXXXXXXXXXXX",
+    "XS........XX",
+    "X.XXXXXX..XX",
+    "X........WXX",
+    "X.w......XXX",
+    "X....BBB..XX",
+    "X........BXX",
+    "X........BXX",
+    "X.......wBXX",
+    "X........GXX",
+    "XXXXXXXXXXXX",
+    "XXXXXXXXXXXX"
+  ]
+}

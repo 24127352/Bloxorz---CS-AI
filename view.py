@@ -5,6 +5,7 @@ from gameModel.block import  Orientation, Direction
 from gameModel.board import Tile
 from inputHandler import InputHandler, Utility
 from menu import StartMenu, PauseMenu
+from levels.levelManager import LevelManager
 
 from search.solver import (
     depth_first_graph_search,
@@ -26,6 +27,7 @@ class BloxorzView:
         # Set up camera view for an isometric perspective
         # camera.position = (5, 14, -10)
         # camera.rotation_x = 45
+        self.levelManager = LevelManager()
 
         # Visuals & Setup
         window.color = color.black50
@@ -36,18 +38,19 @@ class BloxorzView:
         self.startMenu = StartMenu(on_start_callback=self.startGame, on_dfs_callback=self.solveDFS, on_ucs_callback=self.solveUCS)
         self.pauseMenu = PauseMenu(
             on_resume_callback=self.resumeGame,
-            on_restart_callback=self.restartLevel
+            on_restart_callback=self.restartLevel,
+            on_next_level_callback=self.loadNextLevel
         )
 
     def startGame(self):
         self.gameStarted = True
         self.tileColors = {
-            Tile.NORMAL: color.light_gray,
-            Tile.GOAL: color.magenta,
-            Tile.FRAGILE: color.orange,
-            Tile.SOFT_SWITCH: color.cyan,
+            Tile.NORMAL:       color.light_gray,
+            Tile.GOAL:         color.magenta,
+            Tile.FRAGILE:      color.orange,
+            Tile.SOFT_SWITCH:  color.cyan,
             Tile.HEAVY_SWITCH: color.red,
-            Tile.BRIDGE: color.brown
+            Tile.BRIDGE:       color.brown
         }
 
         self.tileEntities = []
@@ -56,7 +59,7 @@ class BloxorzView:
         # 3D Block mesh creation
         self.blockMesh = Entity(
             model='cube',
-            color=color.orange,      # High-contrast color
+            color=color.azure,
             texture='white_cube',   # Sharpens edges
             origin_y=-0.5  # Pivot at the bottom face of the block
         )
@@ -70,6 +73,13 @@ class BloxorzView:
         
     def resumeGame(self):
         self.isPaused = False
+
+    def unlockControlAll(self):
+        """
+        Set all attributes that could lock control for block movement to false
+        """
+        self.isPaused = False
+        self.isAnimating = False
 
     def destroyTileEntities(self):
         """Destroys existing tile entities to prevent stacking duplicate meshes."""
@@ -220,11 +230,13 @@ class BloxorzView:
         uti = self.inputHandler.processKeyUtility(key)
         if uti is not None:
             match uti:
-                case Utility.PAUSE: self.togglePause()
-                case Utility.RESTART: self.restartLevel() # not complete yet
+                case Utility.PAUSE:
+                    self.togglePause()
+                case Utility.RESTART:
+                    self.restartLevel()
             return
 
-        # 2. Block game inputs if game hasn't started or is paused or when playing animation
+        # Block game inputs if game hasn't started, is paused, or animation is playing
         if not self.gameStarted or self.isPaused or self.isAnimating:
             return
 
@@ -234,23 +246,28 @@ class BloxorzView:
             return
 
         self.gameModel.executeMove(dir)
+
+        # Refresh board graphics
+        # Important for bridge/switch changes
+        self.destroyTileEntities()
+        self.renderBoard()
+
+        # Update block position
         self.updateBlockMesh()
 
-        if  self.gameModel.isGameOver or self.gameModel.hasWon:
-            print ("Updating mesh")
-            
+        if self.gameModel.isGameOver or self.gameModel.hasWon:
+            print("Updating mesh")
+
             if self.gameModel.hasWon:
                 print("Stage Complete!")
-
+                self.isAnimating = True
+                invoke(self.loadNextLevel, delay=2)
+                return
 
             elif self.gameModel.isGameOver:
                 print("Game Over - Block fell into void!")
                 self.isAnimating = True
                 self.animateFall(dir)
-
-                # Note: invokes restartLevel() after completing fall animation, When updating fall duration
-                # Must update delay also
-                # invoke(self.restartLevel, delay=1)
 
     def run(self):
         """Starts the main Ursina 3D render loop."""
@@ -293,3 +310,39 @@ class BloxorzView:
         self.autoIndex += 1
 
         invoke(self.playSolution, delay=0.4)
+
+    def loadNextLevel(self):
+
+        # Load next level
+        result = self.levelManager.nextLevel()
+
+        if result is None:
+            print("Finished all levels")
+            self.isAnimating = False
+            return
+
+        board, block = result
+
+        # Replace current level
+        self.gameModel.board = board
+        self.gameModel.block = block
+
+        # Reset game state
+        self.gameModel.hasWon = False
+        self.gameModel.isGameOver = False
+
+        # Clear old board
+        self.destroyTileEntities()
+
+        # Camera may need to move if board size changed
+        self.setupCamera()
+
+        # Draw new board
+        self.renderBoard()
+
+        # Reset block mesh
+        self.blockMesh.rotation = (0, 0, 0)
+        self.updateBlockMesh()
+
+        # Unlock controls
+        self.unlockControlAll()

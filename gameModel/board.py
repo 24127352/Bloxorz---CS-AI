@@ -1,6 +1,7 @@
 from enum import Enum
 from typing import List
 
+
 class Tile(Enum):
     VOID = 0
     GOAL = 1
@@ -28,8 +29,11 @@ TILE_COST = {
 
 #add switch toggles and bridge tiles to the board class, and add a method to toggle switches and bridges
 class Board:
-    def __init__(self, rows: int, cols: int, initialTiles: List[List[Tile]] = None,
-                 startR: int = 0, startC: int = 0):
+    def __init__(self, rows: int, cols: int,
+                 initialTiles: List[List[Tile]] = None,
+                 startR: int = 0,
+                 startC: int = 0):
+
         self.rows = rows
         self.cols = cols
         self.startR = startR
@@ -43,60 +47,70 @@ class Board:
 
         self.initialTiles = [row[:] for row in self.tiles]
 
+        # Bridge system
+        self.bridgeGroups = {}
+        self.bridgeState = {}
+
     def __repr__(self):
-        return f"Board({self.rows}x{self.cols}, Start=({self.startR}, {self.startC}))"
+        return f"Board({self.rows}x{self.cols})"
 
     def reset(self):
         self.tiles = [row[:] for row in self.initialTiles]
-        
-    def isInBounds(self, r: int, c: int) -> bool:
-        """Helper to prevent out-of-bounds or negative indexing errors."""
+
+        for key in self.bridgeState:
+            self.bridgeState[key] = True
+
+    def isInBounds(self, r, c):
         return 0 <= r < self.rows and 0 <= c < self.cols
 
-    def getTile(self, r: int, c: int) -> Tile:
-        """Return tile at row r and column c. Returns VOID if out of bounds."""
+    def getTile(self, r, c):
         if not self.isInBounds(r, c):
             return Tile.VOID
-        return self.tiles[r][c]
 
-    def setTile(self, r: int, c: int, tileType: Tile):
-        """Set a single tile at (r, c)."""
+        try:
+            return self.tiles[r][c]
+        except IndexError:
+            print("BOARD ERROR")
+            print("rows:", self.rows)
+            print("cols:", self.cols)
+            print("actual rows:", len(self.tiles))
+            print("actual cols:", len(self.tiles[r]))
+            print("requested:", r, c)
+            raise
+
+    def setTile(self, r, c, tile):
         if self.isInBounds(r, c):
-            self.tiles[r][c] = tileType
+            self.tiles[r][c] = tile
 
-    def setRow(self, rowIndex: int, tileType: Tile):
-        """Fill an entire row with a specific tile type."""
+    def setRow(self, rowIndex, tile):
         if 0 <= rowIndex < self.rows:
-            self.tiles[rowIndex] = [tileType] * self.cols
+            self.tiles[rowIndex] = [tile] * self.cols
 
-    def setColumn(self, colIndex: int, tileType: Tile):
-        """Fill an entire column with a specific tile type."""
+    def setColumn(self, colIndex, tile):
         if 0 <= colIndex < self.cols:
             for r in range(self.rows):
-                self.tiles[r][colIndex] = tileType
+                self.tiles[r][colIndex] = tile
 
-    #function to add a bridge to the board, given the position of the switch and the position of the bridge
-    def addBridge(self,
-                switchPos,
-                bridgePos):
+    # ============================
+    # Bridge System
+    # ============================
 
-        self.bridgeMap[switchPos] = bridgePos
-    #function to toggle a bridge on the board, given the position of the switch
-    def toggleBridge(self,
-                    switchR,
-                    switchC):
+    def addBridge(self, switchPos, bridgeTiles):
+        self.bridgeGroups[switchPos] = bridgeTiles
+        self.bridgeState[switchPos] = True
 
-        key = (switchR, switchC)
+    def toggleBridge(self, switchPos):
 
-        if key not in self.bridgeMap:
+        if switchPos not in self.bridgeGroups:
             return
 
-        br, bc = self.bridgeMap[key]
+        self.bridgeState[switchPos] = not self.bridgeState[switchPos]
 
-        if self.tiles[br][bc] == Tile.BRIDGE:
+        newTile = (
+            Tile.BRIDGE
+            if self.bridgeState[switchPos]
+            else Tile.VOID
+        )
 
-            self.tiles[br][bc] = Tile.VOID
-
-        else:
-
-            self.tiles[br][bc] = Tile.BRIDGE
+        for r, c in self.bridgeGroups[switchPos]:
+            self.tiles[r][c] = newTile

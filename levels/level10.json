@@ -1,0 +1,40 @@
+{
+  "level_id": 10,
+  "name": "Stage 10: Mixed Challenge",
+  "rows": 15,
+  "cols": 15,
+
+  "start": {
+    "r": 1,
+    "c": 1
+  },
+
+  "bridges": [
+    {
+      "switch": [5, 3],
+      "tiles": [
+        [7, 7],
+        [7, 8],
+        [7, 9]
+      ]
+    }
+  ],
+
+  "grid": [
+    "XXXXXXXXXXXXXXX",
+    "XS............X",
+    "X....FFFF.....X",
+    "X....F.......GX",
+    "X....F........X",
+    "X..w.F........X",
+    "X....F........X",
+    "X......BBB....X",
+    "X.............X",
+    "X....FFFF.....X",
+    "X.............X",
+    "X.............X",
+    "XXXXXXXXXXXXXXX",
+    "XXXXXXXXXXXXXXX",
+    "XXXXXXXXXXXXXXX"
+  ]
+}

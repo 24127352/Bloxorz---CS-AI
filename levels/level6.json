@@ -1,0 +1,45 @@
+{
+  "level_id": 6,
+  "name": "Stage 6: Fragile Crossing",
+  "rows": 12,
+  "cols": 12,
+
+  "start": {
+    "r": 1,
+    "c": 1
+  },
+
+  "bridges": [
+    {
+      "switch": [5, 2],
+      "tiles": [
+        [5, 6],
+        [5, 7],
+        [5, 8]
+      ]
+    },
+    {
+      "switch": [5, 3],
+      "tiles": [
+        [5, 6],
+        [5, 7],
+        [5, 8]
+      ]
+    }
+  ],
+
+  "grid": [
+    "XXXXXXXXXXXX",
+    "XS........XX",
+    "X.FFFFF...XX",
+    "X......F..XX",
+    "X.XXXX.F..XX",
+    "X.ww..BBB.XX",
+    "X......F..XX",
+    "X.FFFF.FG.XX",
+    "X.........XX",
+    "XXXXXXXXXXXX",
+    "XXXXXXXXXXXX",
+    "XXXXXXXXXXXX"
+  ]
+}
