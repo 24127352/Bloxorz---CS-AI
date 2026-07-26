@@ -1,0 +1,17 @@
+{
+  "level_id": 3,
+  "name": "Basic Trial",
+  "rows": 8,
+  "cols": 8,
+  "start": {"r": 1, "c": 1},
+  "grid": [
+    "XXXXXXXX",
+    "X..XXXXX",
+    "X....XXX",
+    "X....XXX",
+    "XXX...GX",
+    "XXX....X",
+    "XXXXXXXX",
+    "XXXXXXXX"
+  ]
+}

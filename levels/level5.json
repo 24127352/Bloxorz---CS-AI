@@ -1,0 +1,47 @@
+{
+  "level_id": 5,
+  "name": "Stage 5: Broken Crossing",
+  "rows": 10,
+  "cols": 20,
+
+  "start": {
+    "r": 2,
+    "c": 1
+  },
+
+  "bridges": [
+    {
+      "switch": [4, 5],
+      "tiles": [
+        [4,9],
+        [5,9],
+        [6,9],
+        [7,9],
+        [8,9]
+      ]
+    },
+    {
+      "switch": [6,5],
+      "tiles": [
+        [4,9],
+        [5,9],
+        [6,9],
+        [7,9],
+        [8,9]
+      ]
+    }
+  ],
+
+  "grid": [
+    "XXXXXXXXXXXXXXXXXXXX",
+    "XXXXXXXXXX......GXXX",
+    "XS..............XXXX",
+    "X..FFF..........XXXX",
+    "X....w...BXXXX..XXXX",
+    "X........BXXXX..XXXX",
+    "X....w...B....F.XXXX",
+    "X........B....F.XXXX",
+    "X........B.......XXX",
+    "XXXXXXXXXXXXXXXXXXXX"
+  ]
+}

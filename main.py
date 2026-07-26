@@ -1,11 +1,17 @@
-from levels.levelLoader import loadLevelFromJson
+from levels.levelManager import LevelManager
 from gameModel.gameController import GameController
 from view import BloxorzView
 
 def main():
-    board, block = loadLevelFromJson("levels/level2.json")
+    levelManager = LevelManager()
+    board, block = levelManager.loadLevel()
+
     myGame = GameController(board, block)
     app = BloxorzView(myGame)
+
+    # Make both use the same LevelManager
+    app.levelManager = levelManager
+
     app.run()
 
 if __name__ == "__main__":

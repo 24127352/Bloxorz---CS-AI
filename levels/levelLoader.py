@@ -17,13 +17,25 @@ CHAR_TILE_MAP = {
 
 def loadLevelFromJson(filePath: str) -> Tuple[Board, Block]:
     """Reads a JSON file and returns initialized (Board, Block) objects."""
-    
+
     with open(filePath, 'r') as f:
         data = json.load(f)
 
     rows = data["rows"]
     cols = data["cols"]
     gridLines = data["grid"]
+
+    # ===== DEBUG =====
+    print("\n========== LOADING LEVEL ==========")
+    print(f"File: {filePath}")
+    print(f"JSON rows: {rows}")
+    print(f"JSON cols: {cols}")
+    print(f"Grid rows: {len(gridLines)}")
+
+    for i, row in enumerate(gridLines):
+        print(f"Row {i}: length = {len(row)}")
+    print("===================================\n")
+    # =================
 
     # Convert character strings into a 2D matrix of Tile Enums
     tileMat = []
@@ -40,6 +52,15 @@ def loadLevelFromJson(filePath: str) -> Tuple[Board, Block]:
         data["start"]["r"],
         data["start"]["c"]
     )
+
+    # ===== DEBUG =====
+    print("Board created successfully")
+    print(f"Board.rows = {board.rows}")
+    print(f"Board.cols = {board.cols}")
+    print(f"Actual tile rows = {len(board.tiles)}")
+    print(f"Actual first row length = {len(board.tiles[0])}")
+    print("===============================\n")
+    # =================
 
     # Read bridge definitions if they exist
     if "bridges" in data:
@@ -66,4 +87,4 @@ def loadLevelFromJson(filePath: str) -> Tuple[Board, Block]:
         orientation=Orientation.STANDING
     )
 
-    return board, block
+    return board, block 

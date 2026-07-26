@@ -100,3 +100,9 @@ class GameController:
             self.hasWon = True
 
         return True
+    def completeLevel(self):
+
+        if self.hasWon:
+            return True
+
+        return False

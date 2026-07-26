@@ -50,7 +50,16 @@ class Board:
         if not self.isInBounds(r, c):
             return Tile.VOID
 
-        return self.tiles[r][c]
+        try:
+            return self.tiles[r][c]
+        except IndexError:
+            print("BOARD ERROR")
+            print("rows:", self.rows)
+            print("cols:", self.cols)
+            print("actual rows:", len(self.tiles))
+            print("actual cols:", len(self.tiles[r]))
+            print("requested:", r, c)
+            raise
 
     def setTile(self, r, c, tile):
         if self.isInBounds(r, c):

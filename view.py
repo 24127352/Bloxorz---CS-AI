@@ -5,6 +5,7 @@ from gameModel.block import  Orientation, Direction
 from gameModel.board import Tile
 from inputHandler import InputHandler, Utility
 from menu import StartMenu, PauseMenu
+from levels.levelManager import LevelManager
 
 
 class BloxorzView:
@@ -15,6 +16,7 @@ class BloxorzView:
         self.isPaused = False
         self.gameStarted = False
         self.isAnimating = False
+        self.levelManager = LevelManager()
 
         # Set up camera view for an isometric perspective
         # camera.position = (5, 14, -10)
@@ -237,6 +239,9 @@ class BloxorzView:
 
             if self.gameModel.hasWon:
                 print("Stage Complete!")
+                self.isAnimating = True
+                invoke(self.loadNextLevel, delay=2)
+                return
 
             elif self.gameModel.isGameOver:
                 print("Game Over - Block fell into void!")
@@ -249,3 +254,38 @@ class BloxorzView:
         # Pass the function directly into Ursina's app instance
         self.app.input = self.handleUrsinaInput
         self.app.run()
+    def loadNextLevel(self):
+
+        # Load next level
+        result = self.levelManager.nextLevel()
+
+        if result is None:
+            print("Finished all levels")
+            self.isAnimating = False
+            return
+
+        board, block = result
+
+        # Replace current level
+        self.gameModel.board = board
+        self.gameModel.block = block
+
+        # Reset game state
+        self.gameModel.hasWon = False
+        self.gameModel.isGameOver = False
+
+        # Clear old board
+        self.destroyTileEntities()
+
+        # Camera may need to move if board size changed
+        self.setupCamera()
+
+        # Draw new board
+        self.renderBoard()
+
+        # Reset block mesh
+        self.blockMesh.rotation = (0, 0, 0)
+        self.updateBlockMesh()
+
+        # Unlock controls
+        self.isAnimating = False   
