@@ -14,7 +14,7 @@ class GameController:
         self.board.reset()
 
         # 2. Reset block state
-        self.block = Block(self.board.startR, self.board.startR, Orientation.STANDING)
+        self.block = Block(self.board.startR, self.board.startC, orientation=Orientation.STANDING)
 
         # 3. Reset status flags & counters
         self.isGameOver = False
@@ -60,6 +60,29 @@ class GameController:
 
         # Generate next state
         self.block = self.block.resultingState(dir)
+        # Check for switch toggles
+        tile = self.board.getTile(
+            self.block.r,
+            self.block.c
+        )
+
+        if tile == Tile.SOFT_SWITCH:
+
+            self.board.toggleBridge(
+                self.block.r,
+                self.block.c
+            )
+
+        elif (
+            tile == Tile.HEAVY_SWITCH
+            and
+            self.block.orientation == Orientation.STANDING
+        ):
+
+            self.board.toggleBridge(
+                self.block.r,
+                self.block.c
+            )
 
         # Check if valid
         if not self.isValidBlockPosition(self.block):

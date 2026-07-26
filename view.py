@@ -6,9 +6,13 @@ from gameModel.board import Tile
 from inputHandler import InputHandler, Utility
 from menu import StartMenu, PauseMenu
 
+from search.solver import (
+    depth_first_graph_search,
+    uniform_cost_search
+)
 
 class BloxorzView:
-    def __init__(self, gameModel: GameController):
+    def __init__(self, gameModel: GameController, problem):
         self.app = Ursina()
         self.gameModel = gameModel
         self.inputHandler = InputHandler()
@@ -16,6 +20,9 @@ class BloxorzView:
         self.gameStarted = False
         self.isAnimating = False
 
+        self.problem = problem
+        self.solution = []
+        self.autoindex = 0
         # Set up camera view for an isometric perspective
         # camera.position = (5, 14, -10)
         # camera.rotation_x = 45
@@ -26,7 +33,7 @@ class BloxorzView:
         self.setupCamera()
 
         # Instantiate Menus
-        self.startMenu = StartMenu(on_start_callback=self.startGame)
+        self.startMenu = StartMenu(on_start_callback=self.startGame, on_dfs_callback=self.solveDFS, on_ucs_callback=self.solveUCS)
         self.pauseMenu = PauseMenu(
             on_resume_callback=self.resumeGame,
             on_restart_callback=self.restartLevel
@@ -54,7 +61,13 @@ class BloxorzView:
             origin_y=-0.5  # Pivot at the bottom face of the block
         )
         self.updateBlockMesh()
+    def solveDFS(self):
+        self.solve("dfs")
 
+
+    def solveUCS(self):
+        self.solve("ucs")
+        
     def resumeGame(self):
         self.isPaused = False
 
@@ -245,3 +258,38 @@ class BloxorzView:
         # Pass the function directly into Ursina's app instance
         self.app.input = self.handleUrsinaInput
         self.app.run()
+
+    def solve(self, algorithm):
+
+        self.startGame()
+
+        if algorithm == "dfs":
+            result = depth_first_graph_search(self.problem)
+
+        else:
+            result = uniform_cost_search(self.problem)
+
+        if result is None:
+            print("No solution")
+            return
+
+        self.autoSolution = result.solution()
+        self.autoIndex = 0
+
+        invoke(self.playSolution, delay=0.5)
+
+    def playSolution(self):
+
+        if self.autoIndex >= len(self.autoSolution):
+            print("Finished")
+            return
+
+        action = self.autoSolution[self.autoIndex]
+
+        self.gameModel.executeMove(action)
+
+        self.updateBlockMesh()
+
+        self.autoIndex += 1
+
+        invoke(self.playSolution, delay=0.4)

@@ -1,9 +1,11 @@
 from ursina import *
 
 class StartMenu(Entity):
-    def __init__(self, on_start_callback):
+    def __init__(self, on_start_callback, on_dfs_callback, on_ucs_callback):
         super().__init__(parent=camera.ui)
         self.on_start_callback = on_start_callback
+        self.on_dfs_callback = on_dfs_callback
+        self.on_ucs_callback = on_ucs_callback
 
         # Background overlay
         self.bg = Entity(
@@ -35,6 +37,26 @@ class StartMenu(Entity):
             on_click=self.start_game
         )
 
+        #dfs button
+
+        self.dfs_button = Button(
+            parent=self,
+            text="Solve by DFS",
+            scale=(0.3,0.08),
+            y=-0.12,
+            color=color.azure,
+            on_click=self.solveDFS
+        )
+        #ucs button
+
+        self.ucs_button = Button(
+            parent=self,
+            text="Solve by UCS",
+            scale=(0.3,0.08),
+            y=-0.24,
+            color=color.azure,
+            on_click=self.solveUCS
+        )
         # Quit Button
         self.quit_button = Button(
             parent=self,
@@ -42,7 +64,7 @@ class StartMenu(Entity):
             color=color.azure,
             highlight_color=color.olive,
             scale=(0.3, 0.08),
-            y=-0.12,
+            y=-0.36,
             on_click=application.quit
         )
 
@@ -50,6 +72,19 @@ class StartMenu(Entity):
         self.disable()  # Hide the start menu
         if self.on_start_callback:
             self.on_start_callback()
+
+    def solveDFS(self):
+        self.disable()
+
+        if self.on_dfs_callback:
+            self.on_dfs_callback()
+
+
+    def solveUCS(self):
+        self.disable()
+
+        if self.on_ucs_callback:
+            self.on_ucs_callback()
 
 
 class PauseMenu(Entity):
