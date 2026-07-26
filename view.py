@@ -4,19 +4,33 @@ from gameModel.gameController import GameController
 from gameModel.block import  Orientation, Direction
 from gameModel.board import Tile
 from inputHandler import InputHandler, Utility
-from menu import StartMenu, PauseMenu
+from menu import *
 from levels.levelManager import LevelManager
 
+from search.solver import (
+    breadth_first_search,
+    depth_first_graph_search,
+    uniform_cost_search,
+    a_star_search
+)
+from gameModel.problem import Problem
+from gameModel.state import State
 
 class BloxorzView:
-    def __init__(self, gameModel: GameController):
+    def __init__(self, gameModel: GameController, problem):
         self.app = Ursina()
         self.gameModel = gameModel
         self.inputHandler = InputHandler()
         self.isPaused = False
         self.gameStarted = False
         self.isAnimating = False
+        self.isSolving = False
+
+        self.problem = problem
+        self.solution = []
+        self.autoindex = 0
         self.levelManager = LevelManager()
+        self.algorithmList = ["BFS", "DFS", "UCS", "A*"]
 
         # Visuals & Setup
         window.color = color.black50
@@ -28,8 +42,10 @@ class BloxorzView:
         self.pauseMenu = PauseMenu(
             on_resume_callback=self.resumeGame,
             on_restart_callback=self.restartLevel,
-            on_next_level_callback=self.loadNextLevel
+            on_next_level_callback=self.loadNextLevel,
+            on_solver_callback= self.showSolverMenu
         )
+        self.solverMenu = SolverMenu(self.algorithmList, self.handleAlgorithmSelected)
 
     def startGame(self):
         self.gameStarted = True
@@ -54,6 +70,49 @@ class BloxorzView:
         )
         self.updateBlockMesh()
 
+    def showSolverMenu(self):
+        if not self.gameStarted or not self.isPaused:
+            return
+
+        self.solverMenu.show()
+        self.isPaused = False
+
+    def handleAlgorithmSelected(self, algo_name: str):
+        self.isSolving = True
+        """Centralized handler for running solvers."""
+        print(f"Algorithm selected: {algo_name}")
+
+        match algo_name:
+
+            case "BFS":
+                self.solveBFS()
+
+            case "DFS":
+                self.solveDFS()
+
+            case "UCS":
+                self.solveUCS()
+
+            case "A*":
+                self.solveAStar()
+        
+    
+    def solveDFS(self):
+        print("Solving using DFS.........")
+        self.solve("dfs")
+
+    def solveUCS(self):
+        print("Solving using UCS.........")
+        self.solve("ucs")
+    
+    def solveBFS(self):
+        print("Solving using BFS........")
+        self.solve("bfs")
+
+    def solveAStar(self):
+        print("Solving using A*..........")
+        self.solve("astar")
+        
     def resumeGame(self):
         self.isPaused = False
 
@@ -63,6 +122,7 @@ class BloxorzView:
         """
         self.isPaused = False
         self.isAnimating = False
+        self.isSolving = False
 
     def destroyTileEntities(self):
         """Destroys existing tile entities to prevent stacking duplicate meshes."""
@@ -90,8 +150,13 @@ class BloxorzView:
         self.updateBlockMesh()
 
         # 5. Unlock controls for gameplay
-        self.isAnimating = False
-        self.isPaused = False
+        self.unlockControlAll()
+        self.problem = Problem(
+            State(
+                self.gameModel.board,
+                self.gameModel.block
+            )
+        )
 
     def togglePause(self):
         if not self.gameStarted:
@@ -220,7 +285,7 @@ class BloxorzView:
             return
 
         # Block game inputs if game hasn't started, is paused, or animation is playing
-        if not self.gameStarted or self.isPaused or self.isAnimating:
+        if not self.gameStarted or self.isPaused or self.isAnimating or self.isSolving:
             return
 
         dir = self.inputHandler.processKeyDirection(key)
@@ -259,6 +324,71 @@ class BloxorzView:
         self.app.input = self.handleUrsinaInput
         self.app.run()
 
+    def solve(self, algorithm):
+
+        # self.restartLevel()
+
+        self.problem = Problem(
+            State(
+                self.gameModel.board,
+                self.gameModel.block
+            )
+        )
+
+        if algorithm == "dfs":
+
+            result = depth_first_graph_search(self.problem)
+
+        elif algorithm == "bfs":
+
+            result = breadth_first_search(self.problem)
+
+        elif algorithm == "ucs":
+
+            result = uniform_cost_search(self.problem)
+
+        elif algorithm == "astar":
+
+            result = a_star_search(self.problem)
+
+        else:
+            self.isSolving = False
+            return
+
+        if result is None:
+            print("No solution")
+            self.isSolving = False
+            return
+
+        self.autoSolution = result.solution()
+
+        self.autoIndex = 0
+
+        invoke(self.playSolution, delay=0.5)
+
+    def playSolution(self):
+
+        if self.autoIndex >= len(self.autoSolution):
+            self.isSolving = False
+            print("Finished")
+            if (self.gameModel.hasWon): 
+                self.loadNextLevel()
+            return
+
+        action = self.autoSolution[self.autoIndex]
+
+        self.gameModel.executeMove(action)
+
+        self.destroyTileEntities()
+
+        self.renderBoard()
+
+        self.updateBlockMesh()
+
+        self.autoIndex += 1
+
+        invoke(self.playSolution, delay=0.4)
+
     def loadNextLevel(self):
 
         # Load next level
@@ -294,3 +424,9 @@ class BloxorzView:
 
         # Unlock controls
         self.unlockControlAll()
+        self.problem = Problem(
+            State(
+                self.gameModel.board,
+                self.gameModel.block
+            )
+        )

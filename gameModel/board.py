@@ -11,7 +11,23 @@ class Tile(Enum):
     HEAVY_SWITCH = 5
     BRIDGE = 6
 
+#costs for each tile type, used in uniform cost search
+TILE_COST = {
 
+    Tile.NORMAL: 1,
+
+    Tile.GOAL: 1,
+
+    Tile.SOFT_SWITCH: 0.5,
+
+    Tile.HEAVY_SWITCH: 0.5,
+
+    Tile.BRIDGE: 1,
+
+    Tile.FRAGILE: 5
+}
+
+#add switch toggles and bridge tiles to the board class, and add a method to toggle switches and bridges
 class Board:
     def __init__(self, rows: int, cols: int,
                  initialTiles: List[List[Tile]] = None,
@@ -22,11 +38,12 @@ class Board:
         self.cols = cols
         self.startR = startR
         self.startC = startC
-
-        if initialTiles is None:
-            self.tiles = [[Tile.NORMAL for _ in range(cols)] for _ in range(rows)]
+        self.bridgeMap = {}
+        # Initialize grid with NORMAL tiles if no initialTiles provided
+        if initialTiles is not None:
+            self.tiles = initialTiles
         else:
-            self.tiles = [row[:] for row in initialTiles]
+            self.tiles = [[Tile.NORMAL for _ in range(cols)] for _ in range(rows)]
 
         self.initialTiles = [row[:] for row in self.tiles]
 
