@@ -6,7 +6,6 @@ from gameModel.board import Tile, TILE_COST
 class Problem:
 
     def __init__(self, initialState):
-
         self.initial = initialState
 
     def goal_test(self, state):
@@ -15,12 +14,10 @@ class Problem:
 
         return (
             block.orientation == Orientation.STANDING
-            and
-            state.board.getTile(block.r, block.c) == Tile.GOAL
+            and state.board.getTile(block.r, block.c) == Tile.GOAL
         )
 
     def actions(self, state):
-
         return list(Direction)
 
     def result(self, state, action):
@@ -28,9 +25,9 @@ class Problem:
         nextState = state.copy()
 
         nextBlock = nextState.block.resultingState(action)
-
         nextState.block = nextBlock
 
+        # Các ô block đang chiếm
         occupied = [(nextBlock.r, nextBlock.c)]
 
         if nextBlock.dr == 1:
@@ -52,22 +49,33 @@ class Problem:
             ):
                 return None
 
-        tile = nextState.board.getTile(nextBlock.r, nextBlock.c)
+        for r, c in occupied:
 
-        if tile == Tile.SOFT_SWITCH:
+            tile = nextState.board.getTile(r, c)
 
-            nextState.board.toggleBridge(
-                (nextBlock.r, nextBlock.c)
-            )
+            if tile == Tile.SOFT_SWITCH:
 
-        elif (
-            tile == Tile.HEAVY_SWITCH
-            and nextBlock.orientation == Orientation.STANDING
-        ):
+                nextState.board.toggleBridge((r, c))
 
-            nextState.board.toggleBridge(
-                (nextBlock.r, nextBlock.c)
-            )
+            elif (
+                tile == Tile.HEAVY_SWITCH
+                and nextBlock.orientation == Orientation.STANDING
+            ):
+
+                nextState.board.toggleBridge((r, c))
+
+        for r, c in occupied:
+
+            tile = nextState.board.getTile(r, c)
+
+            if tile == Tile.VOID:
+                return None
+
+            if (
+                tile == Tile.FRAGILE
+                and nextBlock.orientation == Orientation.STANDING
+            ):
+                return None
 
         return nextState
 
@@ -99,6 +107,9 @@ class Problem:
                     block.c + 1
                 )
             )
+
+        if any(tile == Tile.VOID for tile in tiles):
+            return float("inf")
 
         return max(
             TILE_COST[t]

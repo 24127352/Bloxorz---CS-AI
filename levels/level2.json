@@ -1,83 +1,55 @@
 {
-  "level_id": 2,
-  "name": "Stage 2: The Dual Zenith",
-  "rows": 10,
+  "level_id": 12,
+  "name": "Stage 12: Final Trial",
+  "rows": 20,
   "cols": 20,
 
   "start": {
-    "r": 2,
-    "c": 2
+    "r": 1,
+    "c": 1
   },
 
   "bridges": [
     {
       "switch": [5, 5],
       "tiles": [
-        [4, 9],
-        [5, 9],
-        [6, 9],
-        [7, 9],
-        [8, 9],
-        [8, 10],
-        [8, 11],
-        [8, 12],
-        [8, 13]
+        [10, 8],
+        [10, 9],
+        [10, 10],
+        [10, 11]
       ]
     },
     {
-      "switch": [5, 6],
+      "switch": [14, 15],
       "tiles": [
-        [4, 9],
-        [5, 9],
-        [6, 9],
-        [7, 9],
-        [8, 9],
-        [8, 10],
-        [8, 11],
-        [8, 12],
-        [8, 13]
-      ]
-    },
-    {
-      "switch": [2, 10],
-      "tiles": [
-        [4, 9],
-        [5, 9],
-        [6, 9],
-        [7, 9],
-        [8, 9],
-        [8, 10],
-        [8, 11],
-        [8, 12],
-        [8, 13]
-      ]
-    },
-    {
-      "switch": [2, 11],
-      "tiles": [
-        [4, 9],
-        [5, 9],
-        [6, 9],
-        [7, 9],
-        [8, 9],
-        [8, 10],
-        [8, 11],
-        [8, 12],
-        [8, 13]
+        [15, 8],
+        [15, 9],
+        [15, 10],
+        [15, 11]
       ]
     }
   ],
 
   "grid": [
-    "XXXXXXXXXX..XXXXXGXX",
-    "XXXXXXXXXX..XXXXXXXX",
-    "..S...F...WW...GXXXX",
-    "......F........XXXXX",
-    "XXXX..F..BXXXX.XXXXX",
-    "XXXX.ww..BXXXX..XXXX",
-    "XXXX.ww..BXXXX..XXXX",
-    "XXXX.....BXXXXFFXXXX",
-    "XXXXXX...BBBBBFFXXXX",
-    "XXXXXXXX............"
+    "XXXXXXXXXXXXXXXXXXXX",
+    "XS...............XXX",
+    "X.XXXXXXXXXXXX...XXX",
+    "X.....F..........XXX",
+    "X.XXX.F.XXXXXXX..XXX",
+    "X....wF.........XXXX",
+    "X.XXX.F.XXXXXX..XXXX",
+    "X.....F.........XXXX",
+    "X.XXXXXXXXXXXX..XXXX",
+    "X........F......XXXX",
+    "X.......BBBB....XXXX",
+    "X.XXXXXXFXXXX...XXXX",
+    "X......FF.......XXXX",
+    "X.XXXXXXXXXXXX..XXXX",
+    "X..............WXXXX",
+    "X.......BBBB....XXXX",
+    "X.XXXXXXXXXXXX..GXXX",
+    "X................XXX",
+    "XXXXXXXXXXXXXXXXXXXX",
+    "XXXXXXXXXXXXXXXXXXXX"
   ]
 }
