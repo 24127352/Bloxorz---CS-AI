@@ -48,7 +48,7 @@ class BloxorzView:
         # 3D Block mesh creation
         self.blockMesh = Entity(
             model='cube',
-            color=color.orange,      # High-contrast color
+            color=color.azure,
             texture='white_cube',   # Sharpens edges
             origin_y=-0.5  # Pivot at the bottom face of the block
         )
