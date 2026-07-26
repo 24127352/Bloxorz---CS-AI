@@ -221,6 +221,12 @@ class BloxorzView:
             return
 
         self.gameModel.executeMove(dir)
+
+        # Refresh board graphics
+        self.destroyTileEntities()
+        self.renderBoard()
+
+        # Update block position
         self.updateBlockMesh()
 
         if  self.gameModel.isGameOver or self.gameModel.hasWon:
